@@ -1,15 +1,26 @@
 package com.jpa.test.bootjpaexample;
 
+import com.jpa.test.bootjpaexample.entities.Phone;
+import com.jpa.test.bootjpaexample.entities.PhoneType;
 import com.jpa.test.bootjpaexample.entities.User;
+import com.jpa.test.bootjpaexample.Specifications.UserSpecs;
+import com.jpa.test.bootjpaexample.repositories.PhoneRepository;
 import com.jpa.test.bootjpaexample.repositories.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import static com.jpa.test.bootjpaexample.Specifications.UserSpecs.*;
+import static com.jpa.test.bootjpaexample.Specifications.UserSpecs.getUserByNameSpec;
 
 @SpringBootApplication
 public class BootjpaexampleApplication {
@@ -18,6 +29,7 @@ public class BootjpaexampleApplication {
 
         ApplicationContext context=SpringApplication.run(BootjpaexampleApplication.class, args);
         UserRepository userRepository=context.getBean(UserRepository.class);
+        PhoneRepository phoneRepository=context.getBean(PhoneRepository.class);
         //////////////// WRITE /////////////////////////////////////////////////////////////////////////////////////////
 //        User user=new User();
 //        user.setName("Ganga Suresh");
@@ -110,8 +122,29 @@ public class BootjpaexampleApplication {
 //      users.forEach(user -> System.out.println(user));
 
 ///////////////////////////////// SPECIFICATIONS //////////////////////////////////////////////////////////////////////////
+//    List<User> users=userRepository.findAll(getUserByNameSpec("Ganga Suresh"));
+//        users.forEach(user -> System.out.println(user));
+//
+//        List<Phone> phone=phoneRepository.findAll(getPhoneByTypeSpec(PhoneType.Cell));
+//        phone.forEach(phone1 -> System.out.println(phone1));
 
-        
+//        List<User> users1=userRepository.findAll(getUserByPhoneTypeSpec(PhoneType.Home).and(getUserByNameSpec("Nina")));
+//        users1.forEach(user -> System.out.println(user));
+//        List<User> users=userRepository.findAll(getEmployeesByNameAndPhoneTypeSpec("Ganga Suresh",PhoneType.Cell));
+//        users.forEach(user -> System.out.println(user));
+
+        ///////////////////////////////PAGABLE and sort ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Pageable firstPageWithTwoElements = PageRequest.of(0, 2, Sort.by("city").descending());
+
+        Pageable secondPageWithFiveElements = PageRequest.of(1, 5);
+        List<User> users=userRepository.findAllByStatusLike("h%",firstPageWithTwoElements);
+        users.forEach(user -> System.out.println(user));
+
+        Iterable<User> allusers= userRepository.findAll(Sort.by("city"));
+        allusers.forEach(user -> System.out.println(user));
+
+
+
 
 
     }

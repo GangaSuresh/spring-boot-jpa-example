@@ -23,6 +23,15 @@ public class UserSpecs {
             }
         };
     }
+    public static Specification<User> getUserByNameLikeSpec(String name) {
+        return new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Predicate equalPredicate = criteriaBuilder.like(root.get("name"), "%"+name+"%");
+                return equalPredicate;
+            }
+        };
+    }
     public static Specification<Phone> getPhoneByTypeSpec(PhoneType phoneType) {
         return new Specification<Phone>() {
             @Override
@@ -43,8 +52,7 @@ public class UserSpecs {
             }
         };
     }
-    public static Specification<User> getEmployeesByNameOrPhoneTypeSpec(String name,
-                                                                            PhoneType phoneType) {
+    public static Specification<User> getEmployeesByNameOrPhoneTypeSpec(String name,PhoneType phoneType) {
         return where(getUserByNameSpec(name))
                 .or(getUserByPhoneTypeSpec(phoneType));
     }
@@ -57,13 +65,13 @@ public class UserSpecs {
     public static Specification<User> getEmployeeByNotNameSpec(String name) {
         return Specification.not(getUserByNameSpec(name));
     }
+
     public static Specification<User> test(PhoneType phoneType) {
         return new Specification<User>() {
             @Override
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 Join<User, Phone> phoneJoin = root.join("phones");
                 return  criteriaBuilder.greaterThan(phoneJoin.get("type"), phoneType);
-
             }
         };
     }
