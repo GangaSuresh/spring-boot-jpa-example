@@ -1,5 +1,7 @@
 package com.jpa.test.bootjpaexample;
 
+import com.jpa.test.bootjpaexample.Specifications.Filter;
+import com.jpa.test.bootjpaexample.Specifications.QueryOperator;
 import com.jpa.test.bootjpaexample.entities.Phone;
 import com.jpa.test.bootjpaexample.entities.PhoneType;
 import com.jpa.test.bootjpaexample.entities.User;
@@ -14,9 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static com.jpa.test.bootjpaexample.Specifications.UserSpecs.*;
@@ -134,16 +134,35 @@ public class BootjpaexampleApplication {
 //        users.forEach(user -> System.out.println(user));
 
         ///////////////////////////////PAGABLE and sort ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Pageable firstPageWithTwoElements = PageRequest.of(0, 2, Sort.by("city").descending());
+//        Pageable firstPageWithTwoElements = PageRequest.of(0, 2, Sort.by("city").descending());
+//
+//        Pageable secondPageWithFiveElements = PageRequest.of(1, 5);
+//        List<User> users=userRepository.findAllByStatusLike("h%",firstPageWithTwoElements);
+//        users.forEach(user -> System.out.println(user));
+//
+//        Iterable<User> allusers= userRepository.findAll(Sort.by("city"));
+//        allusers.forEach(user -> System.out.println(user));
 
-        Pageable secondPageWithFiveElements = PageRequest.of(1, 5);
-        List<User> users=userRepository.findAllByStatusLike("h%",firstPageWithTwoElements);
+/////////////////////////////////////////////////// FILTER ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Filter categories =new Filter();
+        categories.setField("city");
+        categories.setOperator(QueryOperator.Equals);
+        List<String> ct= Arrays.asList("Trivandrum","Delhi");
+        categories.setValues(ct);
+        categories.setValue("Trivandrum");
+
+        Filter lowRange =new Filter();
+        lowRange.setField("name");
+        lowRange.setOperator(QueryOperator.Like);
+        lowRange.setValue("G%");
+
+
+        List<Filter> filters = new ArrayList<>();
+        filters.add(lowRange);
+        //filters.add(categories);
+        System.out.println("Filters");
+        List<User> users=userRepository.findAll( getSpecificationFromFilters(filters));
         users.forEach(user -> System.out.println(user));
-
-        Iterable<User> allusers= userRepository.findAll(Sort.by("city"));
-        allusers.forEach(user -> System.out.println(user));
-
-
 
 
 

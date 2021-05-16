@@ -11,6 +11,7 @@ public class FilterSpecs {
         switch (input.getOperator()){
 
             case Equals:
+                System.out.println(input.getField());
                 return (root, query, criteriaBuilder) ->
                         criteriaBuilder.equal(root.get(input.getField()),
                                 castToRequiredType(root.get(input.getField()).getJavaType(),
@@ -37,6 +38,7 @@ public class FilterSpecs {
                                         input.getValue()));
 
             case Like:
+                System.out.println("**********888"+input.getField());
                 return (root, query, criteriaBuilder) ->
                         criteriaBuilder.like(root.get(input.getField()),
                                 "%"+input.getValue()+"%");
