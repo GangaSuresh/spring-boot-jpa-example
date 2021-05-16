@@ -144,6 +144,7 @@ public class BootjpaexampleApplication {
 //        allusers.forEach(user -> System.out.println(user));
 
 /////////////////////////////////////////////////// FILTER ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //only like works
         Filter categories =new Filter();
         categories.setField("city");
         categories.setOperator(QueryOperator.Equals);
